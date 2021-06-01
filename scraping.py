@@ -145,7 +145,7 @@ def scrape_pages(land_abk = "be"):
     return data
 
 def scrape_all(verbose = 0):
-    land_abks = ["bw", "by", "be", "br", "hb", "hh", "he", "mv", "no", "nw", "rp", "sl", "sn", "st", "sh", "th"]
+    land_abks = ["be"]#["bw", "by", "be", "br", "hb", "hh", "he", "mv", "no", "nw", "rp", "sl", "sn", "st", "sh", "th"]
     dfs = scrape_pages(land_abks[0])
     for abk in land_abks[1:]:
         dfs = dfs.append(scrape_pages(abk), ignore_index=True)

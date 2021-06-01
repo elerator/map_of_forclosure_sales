@@ -4,6 +4,8 @@ import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import "./styles.css";
 import { cx, css, injectGlobal } from "emotion";
 
+
+
 import {
   Button,
   Segment,
@@ -61,30 +63,39 @@ class App extends Component {
   state = {
     center: [51.505, -0.091],
     zoom: 6,
-    dfs: {"long_lat":[]}
+    dfs: {"long_lat":[]},
+    markers: []
   };
 
+  setMarkers(data){
+    try{
+      let markers = [];
+      for(const [k,v] of Object.entries(JSON.parse(data)["long_lat"])){markers.push(<Marker key={k} position={JSON.parse(v.replace(/'/g, ''))}><Popup>A pretty CSS3 popup. <br /> Easily customizable.</Popup></Marker>);};
+      this.setState({ markers: markers });
+    }catch(e){console.log(e);};
+  }
   componentDidMount() {
     // Simple GET request using fetch
     fetch('http://127.0.0.1:8000/json')
         .then(response => response.json())
-        .then(data => this.setState({ dfs: data }));
+        .then(data => this.setMarkers(data));
         }
 
   render() {
-    let markers = [];
-    try{
+    let markers = this.state.markers;//[];
+    //try{
       //console.log(typeof(this.state.dfs)===typeof(""));
       //console.log(this.state.dfs);
       //console.log(Object.entries(this.state.dfs["long_lat"]));
       //for(const [k,v] of Object.entries(JSON.parse(this.state.dfs)["long_lat"])){console.log(v);};
+    //    for(const [k,v] of Object.entries(JSON.parse(this.state.dfs)["long_lat"])){markers.push(<Marker key={k} position={JSON.parse(v.replace(/'/g, ''))}><Popup>A pretty CSS3 popup. <br /> Easily customizable.</Popup></Marker>);};
+      //console.log("aahhaa");
+    //}catch(e){
+      //console.log(e);
+    //  return(<div>Loading...</div>)
+    //}
 
-      for(const [k,v] of Object.entries(JSON.parse(this.state.dfs)["long_lat"])){markers.push(<Marker position={JSON.parse(v.replace(/'/g, ''))}><Popup>A pretty CSS3 popup. <br /> Easily customizable.</Popup></Marker>);};
-      console.log("aahhaa");
-    }catch(e){
-      console.log(e);
-      return(<div>Loading...</div>)
-    }
+
     //          <Marker position={this.state.center}>
     return (
       <div
@@ -102,7 +113,7 @@ class App extends Component {
           headerStyles
         )}
       >
-        <Map center={this.state.center} zoom={this.state.zoom}>
+        <Map center={this.state.center} zoom={this.state.zoom}     preferCanvas={true}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
